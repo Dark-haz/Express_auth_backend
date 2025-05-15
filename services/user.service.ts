@@ -7,7 +7,7 @@ import { IUser } from "../models/user.model";
 import { ServiceException } from "../exceptions/ServiceException";
 
 interface JwtPayload {
-  user: { id: string };
+ id: string ;
 }
 
 export class UserService {
@@ -67,11 +67,11 @@ export class UserService {
 
     if (!isValidFormat) {
       throw new Error(
-        'Invalid token expiration format. Use formats like "1h", "30m", "7d".'
+        'Invalid token expiration format. Use formats like "1h", "30m", "7d" , "30s".'
       );
     }
 
-    const payload: JwtPayload = { user: { id: userId } };
+    const payload: JwtPayload = { id: userId  };
     return jwt.sign(payload, secret, { expiresIn: expiresIn });
   }
 }
