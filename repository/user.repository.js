@@ -1,32 +1,31 @@
-import User from "../models/User.js";
+import User from '../models/user.model.js';
 
-/**
- * Finds a user by their username.
- *
- * @param {string} username The username to search for.
- * @returns {Promise<User|undefined>} The user if found, otherwise undefined.
- */
-const findByUsername = (username) => User.findOne({ username });
+export class UserRepository {
+  /**
+   * Finds a user by username.
+   * @param {string} username The username to search for.
+   * @returns {Promise<User>} The user object if found or null if not found.
+   */
+  async findByUsername(username) {
+    return await User.findOne({ username });
+  }
 
-/**
- * Finds a user by their ID and returns it without the password.
- *
- * @param {ObjectId} id The ID of the user to find.
- * @returns {Promise<User|undefined>} The user if found, otherwise undefined.
- */
-const findById = (id) => User.findById(id).select('-password');
+  /**
+   * Finds a user by ID.
+   * @param {string} id The ID of the user to search for.
+   * @returns {Promise<User>} The user object if found or null if not found.
+   */
+  async findById(id) {
+    return await User.findById(id);
+  }
 
-/**
- * Creates a new user.
- *
- * @param {Object} userData The data to create a new user with.
- * @returns {Promise<User>} The newly created user.
- */
-const createUser = (userData) => User.create(userData);
-
-export default {
-  findByUsername,
-  findById,
-  createUser
-};
-
+  /**
+   * Creates a new user.
+   * @param {Object} userData The user data to create a new user.
+   * @returns {Promise<User>} The created user object.
+   */
+  async create(userData) {
+    const user = new User(userData);
+    return await user.save();
+  }
+}
