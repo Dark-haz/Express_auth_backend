@@ -2,16 +2,25 @@ import { Request, Response } from "express";
 import { ApiResponse } from "../utils/apiResponse";
 import { UserService } from "../services/user.service";
 import { ServiceException } from "../exceptions/ServiceException";
+import { userRegisterSchema } from "../validators/user.register.schema";
+import { userLoginSchema } from "../validators/user.login.schema";
+import { ZodError } from "zod";
 
 const userService = new UserService();
 
 export class UserController {
   static async register(req: Request, res: Response): Promise<void> {
     try {
-      const result = await userService.register(req.body);
-      res.json(new ApiResponse(200, true, [],  result ));
+      const parsed = userRegisterSchema.parse(req.body);
+      const result = await userService.register(parsed);
+      res.json(new ApiResponse(200, true, [], result));
     } catch (err: any) {
-      if (err instanceof ServiceException) {
+      if (err instanceof ZodError) {
+        const messages = err.errors.map(
+          (e) => `${e.path.join(".")}: ${e.message}`
+        );
+        res.status(400).json(new ApiResponse(400, false, messages, null));
+      } else if (err instanceof ServiceException) {
         res
           .status(err.statusCode)
           .json(new ApiResponse(err.statusCode, false, [err.message], null));
@@ -27,10 +36,16 @@ export class UserController {
 
   static async login(req: Request, res: Response): Promise<void> {
     try {
-      const result = await userService.login(req.body);
+      const parsed = userLoginSchema.parse(req.body);
+      const result = await userService.login(parsed);
       res.json(new ApiResponse(200, true, [], result));
     } catch (err: any) {
-      if (err instanceof ServiceException) {
+      if (err instanceof ZodError) {
+        const messages = err.errors.map(
+          (e) => `${e.path.join(".")}: ${e.message}`
+        );
+        res.status(400).json(new ApiResponse(400, false, messages, null));
+      } else if (err instanceof ServiceException) {
         res
           .status(err.statusCode)
           .json(new ApiResponse(err.statusCode, false, [err.message], null));
