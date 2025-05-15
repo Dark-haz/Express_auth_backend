@@ -2,7 +2,7 @@
 .vscode
 playground.js
 test.*
-tempCodeRunnerFile.js
+tempCodeRunnerFile.*
 
 # Logs
 logs
