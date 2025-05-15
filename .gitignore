@@ -1,5 +1,7 @@
 # custom files
+.vscode
 playground.js
+test.*
 tempCodeRunnerFile.js
 
 # Logs

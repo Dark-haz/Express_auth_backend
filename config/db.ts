@@ -1,4 +1,4 @@
-import { connect } from 'mongoose';
+import { connect, disconnect } from 'mongoose';
 
 /**
  * Establishes a connection to the MongoDB database.
@@ -8,15 +8,16 @@ import { connect } from 'mongoose';
  * @returns {Promise<void>}
  * @throws {Error} If the connection to MongoDB fails.
  */
-const connectDB = async () => {
+
+export const connectDB = async (): Promise<void> => {
   try {
-    await connect(process.env.MONGO_URI);
-    console.log('MongoDB Connected');
+    await connect(process.env.MONGO_URI as string);
+    console.log('MongoDB connected');
   } catch (err) {
-    console.error(err.message);
+    console.error('Error during disconnection:' , err);
     process.exit(1);
   }
-};
+}
 
 /**
  * Disconnects the MongoDB connection.
@@ -26,15 +27,16 @@ const connectDB = async () => {
  * @returns {Promise<void>}
  * @throws {Error} If the disconnection from MongoDB fails.
  */
-export const disconnectDB = async () => {
+
+export const disconnectDB = async (): Promise<void> => {
   try {
-    await mongoose.disconnect();
+    await disconnect();
     console.log('MongoDB Disconnected');
   } catch (err) {
-    console.error('Error during disconnection:', err.message);
+    console.error('Error during disconnection:', err);
+    process.exit(0);
   }
-};
-
+}
 
 export default {connectDB , disconnectDB};
 
