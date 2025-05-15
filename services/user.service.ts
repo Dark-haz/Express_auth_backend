@@ -44,7 +44,7 @@ export class UserService {
     if (!user) throw new ServiceException("Invalid credentials", 401);
 
     const passwordMatch = await bcrypt.compare(data.password, user.password);
-    if (!passwordMatch) throw new Error("Invalid credentials");
+    if (!passwordMatch) throw new ServiceException("Invalid credentials", 401);
 
     const token = this.generateToken(user._id.toString());
     const userDto = new UserDTO(user);
